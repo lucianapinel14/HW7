@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Luciana Pinel / 002
  *
  *   This java file contains the problem solutions for the methods selectionSort,
  *   mergeSortDivisibleByKFirst, asteroidsDestroyed, and numRescueCanoes methods.
@@ -40,7 +40,26 @@ public class ProblemSolutions {
 
             // YOU CODE GOES HERE -- COMPLETE THE INNER LOOP OF THIS
             // "SELECTION SORT" ALGORITHM.
-            // DO NOT FORGET TO ADD YOUR NAME / SECTION ABOVE
+            int targetIndex = i;
+
+            // find the minimum (ascending) or maximum (descending)
+            for (int j = i + 1; j < n; j++) {
+
+                if (ascending) {
+                    if (values[j] < values[targetIndex]) {
+                        targetIndex = j;
+                    }
+                } else {  // descending sort
+                    if (values[j] > values[targetIndex]) {
+                        targetIndex = j;
+                    }
+                }
+            }
+
+            // swap the found value with index i
+            int temp = values[i];
+            values[i] = values[targetIndex];
+            values[targetIndex] = temp;
 
         }
 
@@ -102,8 +121,39 @@ public class ProblemSolutions {
         // TO CODE WITH A SPACE COMPLEXITY OF O(N LOG N), WHICH IS FINE FOR PURPOSES
         // OF THIS PROGRAMMING EXERCISES.
 
-        return;
+        int[] temp = new int[right - left + 1];
+        int i = left;
+        int j = mid + 1;
+        int t = 0;
 
+        while (i <= mid && j <= right) {
+
+            boolean leftDiv = arr[i] % k == 0;
+            boolean rightDiv = arr[j] % k == 0;
+
+            if (leftDiv && !rightDiv) {
+                temp[t++] = arr[i++];
+            }
+            else if (!leftDiv && rightDiv) {
+                temp[t++] = arr[j++];
+            }
+            else if (leftDiv && rightDiv) {
+                // both divisible → keep original order (stable)
+                temp[t++] = arr[i++];
+            }
+            else {
+                // neither divisible → normal ASCENDING merge
+                if (arr[i] <= arr[j]) temp[t++] = arr[i++];
+                else temp[t++] = arr[j++];
+            }
+        }
+
+        while (i <= mid) temp[t++] = arr[i++];
+        while (j <= right) temp[t++] = arr[j++];
+
+        for (int x = 0; x < temp.length; x++) {
+            arr[left + x] = temp[x];
+        }
     }
 
 
@@ -156,7 +206,18 @@ public class ProblemSolutions {
 
         // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT()
 
-        return false;
+        Arrays.sort(asteroids);
+
+        long currentMass = mass;  // use long to avoid overflow
+
+        for (int a : asteroids) {
+            if (currentMass < a) {
+                return false;
+            }
+            currentMass += a;
+        }
+
+        return true;
 
     }
 
@@ -194,7 +255,28 @@ public class ProblemSolutions {
 
         // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT
 
-        return -1;
+        if (people.length == 0) {
+            return 0;
+        }
+
+        Arrays.sort(people);
+
+        int i = 0;
+        int j = people.length - 1;
+        int sleds = 0;
+
+        while (i <= j) {
+
+            // try pairing the lightest with the heaviest
+            if (people[i] + people[j] <= limit) {
+                i++;  // light person used
+            }
+
+            j--;      // heavy person always goes
+            sleds++;  // one sled used
+        }
+
+        return sleds;
 
     }
 
